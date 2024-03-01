@@ -1,8 +1,12 @@
 build
 .vscode
 temp
+.gitignore
 CMakeUserPresets.json
+Dockerfile
 DSG_BS_174_F_Bass_08.wav
 Hard_BOOM_Kick.wav
+Makefile
+README.md
 temp.jpg
 text.txt
