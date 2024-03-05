@@ -49,3 +49,6 @@ conan-rebuild:
 	mkdir comments-service/build && \
 	cd comments-service/build && \
 	conan install .. --output-folder=. --build=missing)
+
+
+# docker run -it audio2waveform bash
