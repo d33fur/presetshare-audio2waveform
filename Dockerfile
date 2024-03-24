@@ -11,6 +11,7 @@ SHELL ["/bin/bash", "-c"]
 RUN apt-get update && \
     apt-get install -y \
     pkg-config \
+    libva-dev \
     python3-pip && \
     pip3 install conan --upgrade && \
     conan profile detect && \
@@ -31,6 +32,8 @@ RUN apt-get update && \
 # RUN cmake -DCMAKE_BUILD_TYPE=Release ..
 # RUN cmake --build .
 # RUN source deactivate_conanbuild.sh
+
+
 
 FROM ubuntu:22.04
 

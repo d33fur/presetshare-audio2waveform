@@ -7,9 +7,10 @@ include(${CMAKE_BINARY_DIR}/conan_toolchain.cmake)
 set(CMAKE_CXX_STANDARD 20)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_BINARY_DIR}/conan_paths.cmake")
-find_package(Boost 1.71.0 REQUIRED) # 1.82.0
+find_package(Boost REQUIRED) # 1.82.0
 find_package(Threads REQUIRED)
 find_package(nlohmann_json REQUIRED)
+find_package(OpenCV REQUIRED)
 find_package(FFmpeg REQUIRED COMPONENTS avcodec avformat avutil avdevice swresample swscale avfilter)
 
 add_executable(${PROJECT_NAME} source/test.cpp)
@@ -24,4 +25,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     avdevice
     swresample
     swscale
-    avfilter)
+    avfilter
+    opencv_core 
+    opencv_imgproc 
+    opencv_highgui)

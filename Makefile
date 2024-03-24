@@ -36,18 +36,18 @@ local: conan-rebuild local-rebuild
 
 .PHONY: local-rebuild
 local-rebuild:
-	@(cd comments-service/build && \
+	@(cd build && \
 	source conanbuild.sh && \
 	cmake -DCMAKE_BUILD_TYPE=Release .. && \
 	cmake --build . && \
 	source deactivate_conanbuild.sh && \
-	./comments-service 0.0.0.0 8080)
+	./audio2waveform ./../DSG_BS_174_F_Bass_08.wav)
 
 .PHONY: conan-rebuild
 conan-rebuild:
-	@(rm -rf comments-service/build/ && \
-	mkdir comments-service/build && \
-	cd comments-service/build && \
+	@(rm -rf build/ && \
+	mkdir build && \
+	cd build && \
 	conan install .. --output-folder=. --build=missing)
 
 
