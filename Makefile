@@ -41,7 +41,7 @@ local-rebuild:
 	cmake -DCMAKE_BUILD_TYPE=Release .. && \
 	cmake --build . && \
 	source deactivate_conanbuild.sh && \
-	./audio2waveform ./../DSG_BS_174_F_Bass_08.wav)
+	./audio2waveform 0.0.0.0 8080 1)
 
 .PHONY: conan-rebuild
 conan-rebuild:

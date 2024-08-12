@@ -1,0 +1,10 @@
+services:
+  a2w-service:
+    container_name: a2w-service
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8080:8080"
+
