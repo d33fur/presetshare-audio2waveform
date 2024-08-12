@@ -32,7 +32,7 @@ clear:
 	docker-compose rm -f) 
 
 .PHONY: local
-local: conan-rebuild local-rebuild
+local: conan-rebuild local-rebuild local-run
 
 .PHONY: local-rebuild
 local-rebuild:
@@ -40,8 +40,7 @@ local-rebuild:
 	source conanbuild.sh && \
 	cmake -DCMAKE_BUILD_TYPE=Release .. && \
 	cmake --build . && \
-	source deactivate_conanbuild.sh && \
-	./audio2waveform 0.0.0.0 8080 1)
+	source deactivate_conanbuild.sh)
 
 .PHONY: conan-rebuild
 conan-rebuild:
@@ -50,5 +49,12 @@ conan-rebuild:
 	cd build && \
 	conan install .. --output-folder=. --build=missing)
 
+.PHONY: local-run
+local-run:
+	@(cd build && \
+	./audio2waveform 0.0.0.0 8080)
 
-# docker run -it audio2waveform bash
+.PHONY: tests
+tests:
+	@(pip install requests >/dev/null && \
+	python3 tests/api.py)

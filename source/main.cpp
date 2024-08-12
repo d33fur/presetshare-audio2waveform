@@ -1,27 +1,21 @@
 #include "server.hpp"
-#include <boost/asio.hpp>
-#include <cstdlib>
-#include <iostream>
-#include <memory>
-#include <string>
-#include <thread>
-#include <vector>
 
-int main(int argc, char* argv[])
-{
-    if (argc != 3)
-    {
-        std::cerr << "Usage: server <address> <port>\n";
-        return EXIT_FAILURE;
-    }
-    auto const address = net::ip::make_address(argv[1]);
-    auto const port = static_cast<unsigned short>(std::atoi(argv[2]));
+int main(int argc, char *argv[]) {
+  if (argc != 3) {
+    std::cerr << "Usage: audio2waveform <address> <port>\n"
+              << "Example:\n"
+              << "    audio2waveform 0.0.0.0 8080\n";
+    return EXIT_FAILURE;
+  }
 
-    net::io_context ioc{1};
+  auto const address = net::ip::make_address(argv[1]);
+  auto const port = static_cast<unsigned short>(std::atoi(argv[2]));
 
-    std::make_shared<listener>(ioc, tcp::endpoint{address, port})->run();
+  net::io_context ioc{1};
 
-    ioc.run();
+  std::make_shared<listener>(ioc, tcp::endpoint{address, port})->run();
 
-    return EXIT_SUCCESS;
+  ioc.run();
+
+  return EXIT_SUCCESS;
 }

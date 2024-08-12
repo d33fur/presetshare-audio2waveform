@@ -30,5 +30,5 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     SndFile::sndfile
     ${OpenCV_LIBS})
 
-target_include_directories(${PROJECT_NAME} PRIVATE 
-    ${OpenCV_INCLUDE_DIRS})
+# target_include_directories(${PROJECT_NAME} PRIVATE 
+#     ${OpenCV_INCLUDE_DIRS})
