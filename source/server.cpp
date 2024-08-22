@@ -77,7 +77,6 @@ void session::on_read(beast::error_code ec, std::size_t bytes_transferred) {
       int output_width = std::stoi(req_.at("output-w"));
       int output_height = std::stoi(req_.at("output-h"));
       bool filled = req_.at("filled") == "true";
-      float scale = std::stof(req_.at("scale"));
       int line = std::stoi(req_.at("line"));
 
       const std::string filename = "uploaded_audio.wav";
@@ -91,7 +90,7 @@ void session::on_read(beast::error_code ec, std::size_t bytes_transferred) {
 
       const std::string output_image = "waveform.webp";
 
-      createWaveformImage(data, output_image, input_width, input_height, output_width, output_height, filled, scale, line);
+      createWaveformImage(data, output_image, input_width, input_height, output_width, output_height, filled, line);
 
       std::ifstream ifs(output_image, std::ios::binary);
       std::vector<char> image_data((std::istreambuf_iterator<char>(ifs)),

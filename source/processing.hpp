@@ -9,6 +9,6 @@ void readAudioData(const std::string &filename, std::vector<float> &data,
 
 void createWaveformImage(const std::vector<float> &data, const std::string &outputFile,
                          int input_width, int input_height, int output_width,
-                         int output_height, bool filled, float scale, int line);
+                         int output_height, bool filled, int line);
 
 #endif // PROCESSING_HPP

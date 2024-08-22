@@ -33,9 +33,9 @@ void readAudioData(const std::string &filename, std::vector<float> &data,
 
 void createWaveformImage(const std::vector<float> &data, const std::string &outputFile,
                          int input_width, int input_height, int output_width,
-                         int output_height, bool filled, float scale, int line) {
-  int width = output_width * scale;
-  int height = output_height * scale;
+                         int output_height, bool filled, int line) {
+  int width = input_width;
+  int height = input_height;
   cv::Mat highResImage = cv::Mat::zeros(height, width, CV_8UC3);
 
   cv::Scalar bgColor(46, 43, 39);
