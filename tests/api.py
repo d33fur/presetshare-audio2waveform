@@ -52,16 +52,16 @@ class TestWaveformService(unittest.TestCase):
         os.remove(large_audio_file)
         self.assertEqual(response.status_code, 200)
 
-    # def test_invalid_audio_format(self):
-    #     """Тест с некорректным аудиофайлом (например, текстовым файлом)."""
-    #     with open('test.txt', 'w') as f:
-    #         f.write("This is a test.")
-    #     with open('test.txt', 'rb') as f:
-    #         files = {'file': ('test.txt', f, 'text/plain')}
-    #         response = requests.post(self.BASE_URL, files=files)
-    #     os.remove('test.txt')
-    #     self.assertEqual(response.status_code, 415)
-    #     self.assertIn('Unsupported file type', response.text)
+    def test_invalid_audio_format(self):
+        """Тест с некорректным аудиофайлом (например, текстовым файлом)."""
+        with open('test.txt', 'w') as f:
+            f.write("This is a test.")
+        with open('test.txt', 'rb') as f:
+            files = {'file': ('test.txt', f, 'text/plain')}
+            response = requests.post(self.BASE_URL, files=files)
+        os.remove('test.txt')
+        self.assertEqual(response.status_code, 415)
+        self.assertIn('Unsupported file type', response.text)
 
     # def test_empty_audio_file(self):
     #     """Тест с пустым аудиофайлом."""

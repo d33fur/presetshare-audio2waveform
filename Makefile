@@ -54,6 +54,8 @@ local-run:
 	@(cd build && \
 	./audio2waveform 0.0.0.0 8080)
 
+#  тут тесты не будут работать, потому что api другая
+
 .PHONY: tests
 tests:
 	@(pip install requests >/dev/null && \

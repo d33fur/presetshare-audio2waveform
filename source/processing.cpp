@@ -31,11 +31,11 @@ void readAudioData(const std::string &filename, std::vector<float> &data,
   }
 }
 
-void createWaveformImage(const std::vector<float> &data,
-                         const std::string &outputFile) {
-  const int scaleFactor = 2;
-  const int width = 700 * scaleFactor;
-  const int height = 700 * scaleFactor;
+void createWaveformImage(const std::vector<float> &data, const std::string &outputFile,
+                         int input_width, int input_height, int output_width,
+                         int output_height, bool filled, float scale, int line) {
+  int width = output_width * scale;
+  int height = output_height * scale;
   cv::Mat highResImage = cv::Mat::zeros(height, width, CV_8UC3);
 
   cv::Scalar bgColor(46, 43, 39);
@@ -46,7 +46,7 @@ void createWaveformImage(const std::vector<float> &data,
   float center = height / 2.0f;
   int step = std::max(1, static_cast<int>(data.size() / width));
 
-  for (int x = 0; x < width; ++x) {
+  for(int x = 0; x < width; ++x) {
     int start = x * step;
     int end = std::min(static_cast<int>(data.size()), (x + 1) * step);
 
@@ -58,12 +58,15 @@ void createWaveformImage(const std::vector<float> &data,
     int min_y = static_cast<int>(center * (1 - min_val));
     int max_y = static_cast<int>(center * (1 - max_val));
 
-    cv::line(highResImage, cv::Point(x, min_y), cv::Point(x, max_y), lineColor,
-             1, cv::LINE_AA);
+    cv::line(highResImage, cv::Point(x, min_y), cv::Point(x, max_y), lineColor, line, cv::LINE_AA);
+
+    if(filled) {
+      cv::line(highResImage, cv::Point(x, min_y), cv::Point(x, center), lineColor, line, cv::LINE_AA);
+    }
   }
 
   cv::Mat image;
-  cv::resize(highResImage, image, cv::Size(700, 700), 0, 0, cv::INTER_AREA);
+  cv::resize(highResImage, image, cv::Size(output_width, output_height), 0, 0, cv::INTER_AREA);
 
   cv::imwrite(outputFile, image);
 }

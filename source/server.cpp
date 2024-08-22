@@ -50,43 +50,75 @@ void session::do_read() {
 void session::on_read(beast::error_code ec, std::size_t bytes_transferred) {
   boost::ignore_unused(bytes_transferred);
 
-  if (ec == http::error::end_of_stream)
+  if(ec == http::error::end_of_stream)
     return do_close();
 
-  if (ec)
+  if(ec)
     return fail(ec, "read");
 
   req_ = parser_->release();
 
-  if (req_.method() == http::verb::post && req_.target() == "/waveform") {
-    const std::string filename = "uploaded_audio.wav";
-    std::ofstream ofs(filename, std::ios::binary);
-    ofs << req_.body();
-    ofs.close();
+  if(req_.method() == http::verb::post && req_.target() == "/waveform") {
+    // auto content_type = req_[http::field::content_type];
+    // if(content_type != "audio/wave") {
+    //   http::response<http::string_body> res{http::status::unsupported_media_type, req_.version()};
+    //   res.set(http::field::server, SERVER_VERSION);
+    //   res.set(http::field::content_type, "text/plain");
+    //   res.body() = "Unsupported Media Type: Expected audio/wave";
+    //   res.content_length(res.body().size());
+    //   res.keep_alive(req_.keep_alive());
 
-    std::vector<float> data;
-    int sampleRate;
-    readAudioData(filename, data, sampleRate);
+    //   send_response(std::move(res));
+    //   return;
+    // }
+    try {
+      int input_width = std::stoi(req_.at("input-w"));
+      int input_height = std::stoi(req_.at("input-h"));
+      int output_width = std::stoi(req_.at("output-w"));
+      int output_height = std::stoi(req_.at("output-h"));
+      bool filled = req_.at("filled") == "true";
+      float scale = std::stof(req_.at("scale"));
+      int line = std::stoi(req_.at("line"));
 
-    const std::string output_image = "waveform.webp";
-    createWaveformImage(data, output_image);
+      const std::string filename = "uploaded_audio.wav";
+      std::ofstream ofs(filename, std::ios::binary);
+      ofs << req_.body();
+      ofs.close();
 
-    std::ifstream ifs(output_image, std::ios::binary);
-    std::vector<char> image_data((std::istreambuf_iterator<char>(ifs)),
-                                 std::istreambuf_iterator<char>());
+      std::vector<float> data;
+      int sampleRate;
+      readAudioData(filename, data, sampleRate);
 
-    http::response<http::vector_body<char>> res{http::status::ok,
-                                                req_.version()};
-    res.set(http::field::server, SERVER_VERSION);
-    res.set(http::field::content_type, "image/webp");
-    res.body() = std::move(image_data);
-    res.content_length(res.body().size());
-    res.keep_alive(req_.keep_alive());
+      const std::string output_image = "waveform.webp";
 
-    send_response(std::move(res));
+      createWaveformImage(data, output_image, input_width, input_height, output_width, output_height, filled, scale, line);
+
+      std::ifstream ifs(output_image, std::ios::binary);
+      std::vector<char> image_data((std::istreambuf_iterator<char>(ifs)),
+                                    std::istreambuf_iterator<char>());
+
+      http::response<http::vector_body<char>> res{http::status::ok, req_.version()};
+      res.set(http::field::server, SERVER_VERSION);
+      res.set(http::field::content_type, "image/webp");
+      res.body() = std::move(image_data);
+      res.content_length(res.body().size());
+      res.keep_alive(req_.keep_alive());
+
+      send_response(std::move(res));
+    }
+    catch(const std::exception& err) {
+      std::cout << "err" << std::endl;
+
+      http::response<http::string_body> res{http::status::bad_request, req_.version()};
+      res.set(http::field::server, SERVER_VERSION);
+      res.set(http::field::content_type, "text/html");
+      res.keep_alive(req_.keep_alive());
+      res.body() = "Invalid request method or path";
+      res.prepare_payload();
+      send_response(std::move(res));
+    }
   } else {
-    http::response<http::string_body> res{http::status::bad_request,
-                                          req_.version()};
+    http::response<http::string_body> res{http::status::bad_request, req_.version()};
     res.set(http::field::server, SERVER_VERSION);
     res.set(http::field::content_type, "text/html");
     res.keep_alive(req_.keep_alive());
